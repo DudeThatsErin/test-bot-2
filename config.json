@@ -1,0 +1,32 @@
+{
+	"mysql": {
+		"host": "localhost",
+		"user": "sakura_usr",
+		"password": "Tessie5567",
+		"database": "sakura"
+	},
+	"bot": {
+		"prefix": "s.",
+		"token": "NzkxODAzNTg3NDMyNjc3NDI3.X-Uejg.fTgpL3uoeWLmDHg89jjgGP_365o",
+		"tag": "Sakura Moon#1301",
+		"name": "Sakura Moon",
+		"ownerID": "455926927371534346",
+		"server": "https://discord.gg/tT3VEW8AYF",
+		"invite_link": "https://discord.com/api/oauth2/authorize?client_id=791803587432677427&permissions=8&scope=bot",
+		"avatar": "https://codinghelp.site/bots/sm/neon-moon.jpg",
+		"release": "6 June 2021",
+		"patreon": "https://www.patreon.com/SakuraMoon",
+		"type": "Utility/Miscellaneous",
+		"url": "https://dudethatserin.site/sakura/",
+		"server_id": "821170440571322389",
+		"testserver_id": "718253204147798047",
+		"reportsChId": "860892878464221185"
+	},
+	"developer": {
+		"name": "Erin Skidds",
+		"username": "DudeThatsErin",
+		"tag": "DudeThatsErin#8061",
+		"id": "455926927371534346",
+		"url": "https://dudethatserin.site"
+	}
+}
