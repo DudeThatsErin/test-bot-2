@@ -13,9 +13,10 @@ module.exports = {
     note: '',
     async execute(message, args, client) {
 
-        let newPrefix = 's.';
-        console.log('oldPrefix: ' + newPrefix);
-        if (message.member.id === message.guild.ownerID) {
+        let newPrefix = 's!';
+        console.log('my id: ' + message.member.id);
+        console.log('guild owner ID ' + message.guild.ownerId)
+        if (message.member.id === message.guild.ownerId) {
             (await connection).query( //works
                 `UPDATE Guilds SET prefix = ? WHERE guildId = ?;`,
                 [newPrefix, message.guild.id]

@@ -1,7 +1,5 @@
-const paginationEmbed = require('discord.js-pagination');
-const {
-	MessageEmbed
-} = require('discord.js');
+const paginationEmbed = require('@psibean/discord.js-pagination');
+const {	MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'help',
@@ -14,7 +12,9 @@ module.exports = {
 	botPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
 	async execute(msg, args, client) {
 		let prefix = client.guildCommandPrefixes.get(msg.guild.id);
-		console.log(prefix)
+		//console.log(prefix);
+
+		const helpEmbeds = [];
 
 		const embed1 = new MessageEmbed()
 			.setColor('#6683AD')
@@ -22,7 +22,7 @@ module.exports = {
 			.setDescription(`These are all of the commands Sakura Moon can do. If you want to get more information you can do \`${prefix}help <command>\`. Clicking the emojies at the bottom of this message will allow you to go through all of our commands.`)
 			.addFields({
 				name: 'These are commands any user can use.',
-				value: '```css\nping\navatar\nuser-info\nserver-info\npatreon\nbot-info\ninvite\nhelp\nreport\nstatusreport```'
+				value: '```css\nping\navatar\nuser-info\nserver-info\npatreon\nbot-info\ninvite\nhelp\nreport\nstatusreport\ncoinflip\nroll\n```'
 			});
 
 		const embed2 = new MessageEmbed()
@@ -67,22 +67,23 @@ module.exports = {
 				value: '```css\nadd-members\nadd-users\ncheck-participants\nremove-participant\nstart-challenge\nchallenge\nedit-challenge\ncheck-submissions\nreviewed\npurge-submissions\nend-challenge\n```'
 			});
 
-		pages = [
-			embed1,
-			embed2,
-			embed3,
-			embed4,
-			embed5
-		];
+		pages = [];
+
+		const footerResolver = (currentPageIndex, pagesLength) =>
+			`Page ${currentPageIndex + 1} / ${pagesLength}: ${(currentPageIndex % 2 === 0) ? 'Thanks for using Sakura Moon!' : 'Thanks for using Sakura Moon!'}`;
+		const collectErrorHandler = ({ error }) => console.log(error);
+
+		helpEmbeds.push(embed1);
+		helpEmbeds.push(embed2);
+		helpEmbeds.push(embed3);
+		helpEmbeds.push(embed4);
 
 		let cmdd = args[0];
 
 		if (cmdd) { //WORKS
 
 			const cmd = msg.client.commands.get(args[0]) || msg.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
-
 			if (!cmd) return msg.channel.send("That command could not be found!");
-
 			if (!cmd.inHelp) return msg.channel.send("No help for that command could be found!");
 
 			const emb = new MessageEmbed()
@@ -100,7 +101,7 @@ module.exports = {
 				emb.addField("Aliases", cmd.aliases.join(", "), false);
 			}
 			if (cmd.cooldown) {
-				emb.addField("You have to wait how many seconds between commands?", cmd.cooldown, false)
+				emb.addField("You need to wait this long between usages of this command:", `${cmd.cooldown} seconds`, false)
 			}
 			if (cmd.usage) {
 				emb.addField("Usage", cmd.usage, false);
@@ -120,10 +121,10 @@ module.exports = {
 			if (cmd.patreonOnly) {
 				emb.addField('Do you need to subscribe to Sakura Moon on Patreon to use this command?', cmd.patreonOnly, false)
 			}
-			msg.channel.send(emb);
+			message.reply({ embeds: [emb] });
 
 		} else {
-			paginationEmbed(msg, pages, ['◀️', '▶️'], '3600000');
+			paginationEmbed(message, helpEmbeds, { footerResolver, collectErrorHandler, timeout: 120000, idle: 60000 });
 		}
 
 	},

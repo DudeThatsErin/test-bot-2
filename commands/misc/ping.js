@@ -5,6 +5,9 @@ module.exports = {
   usage: 's.ping',
   example: 's.ping or s.beep or s.uptime',
   inHelp: 'yes',
+  cooldown: 5,
+  patreonOnly: 'no',
+  ownerOnly: 'no',
   userPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
   botPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
   execute(message, args) {
@@ -13,6 +16,6 @@ module.exports = {
     let minutes = Math.floor(message.client.uptime / 60000) % 60;
     let seconds = Math.floor(message.client.uptime / 1000) % 60;
 
-    message.channel.send(`🏓 Pong! I have been awake for ${days}d ${hours}h ${minutes}m ${seconds}s`);
+    message.channel.send({ content: `🏓 Pong! I have been awake for ${days}d ${hours}h ${minutes}m ${seconds}s` });
   }
 };

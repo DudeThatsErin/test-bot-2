@@ -6,10 +6,10 @@
 		"database": "sakura"
 	},
 	"bot": {
-		"prefix": "s.",
-		"token": "NzkxODAzNTg3NDMyNjc3NDI3.X-Uejg.fTgpL3uoeWLmDHg89jjgGP_365o",
-		"tag": "Sakura Moon#1301",
-		"name": "Sakura Moon",
+		"prefix": "s!",
+		"token": "ODE5OTk3MzA2NzMyMDE5NzQy.YEuwAA.qo3sD2yDAApSjC2Rc3z3fLeUZuM",
+		"tag": "Sakura Moon#1301 Test Bot",
+		"name": "Sakura Moon Test Bot",
 		"ownerID": "455926927371534346",
 		"server": "https://discord.gg/tT3VEW8AYF",
 		"invite_link": "https://discord.com/api/oauth2/authorize?client_id=791803587432677427&permissions=8&scope=bot",

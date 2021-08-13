@@ -4,18 +4,18 @@ module.exports = {
     name: 'bot-info',
     aliases: ['binfo', 'sm', 'sakuramoon', 'sakura-moon', 'smoon', 'binformation', 'bot-information', 'botinformation', 'botinfo'],
     description: 'Provides information about Sakura Moon to users.',
-    usage: 's.bot-info',
+    usage: '++bot-info',
     inHelp: 'yes',
-    example: 's.bot-info or s.binfo',
+    example: '++bot-info or ++binfo',
     userPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
     botPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
     async execute(message, args) {
 
         let embed = new Discord.MessageEmbed()
             .setColor('#EB74EE')
-            .setTitle('Sakura Moon')
+            .setTitle('r/CodingHelp')
             .setImage('https://codinghelp.site/bots/sm/neon-moon.jpg')
-            .setDescription('This is everything you need to know about Sakura Moon.')
+            .setDescription('This is everything you need to know about r/CodingHelp.')
             .addFields({
                 name: 'Invite someone to my server!',
                 value: 'https://discord.gg/tT3VEW8AYF'
@@ -38,6 +38,6 @@ module.exports = {
             .setTimestamp()
             .setFooter('Thanks for using Sakura Moon!', 'https://codinghelp.site/bots/sm/neon-moon.jpg');
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
     }
 };
