@@ -17,7 +17,6 @@ const config = require('./config.json');
 console.log('|-----------------------------------|');
 console.log('     Loading Command Files...        ');
 console.log('|-----------------------------------|');
-client.guildCommandPrefixes = new Discord.Collection();
 client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
 const { cooldowns } = client;
