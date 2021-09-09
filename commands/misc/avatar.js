@@ -1,26 +1,54 @@
 module.exports = {
-    name: 'av',
     description: 'Allows users to see other users avatars in a big form.',
-    aliases: ['a', 'avatar', 'icon', 'pfp'],
-    usage: 's.av',
-    example: 's.av or s.avatar',
-    inHelp: 'yes',
-    note: 'You are able to mention multiple users at a time to get multiple avatars at one time.',
-    userPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
-    botPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
-    execute(message, args) {
-        if (!message.mentions.users.size) {
-            return message.channel.send(`Your avatar: <${message.author.displayAvatarURL({ format: 'png', dynamic: true })}>`);
-        }
+    aliases: ['a', 'av', 'avatar', 'icon', 'pfp'],
+    name: "avatar",
+    categories: "Miscellaneous",
+    permissions: " ",
+    usage: "/avatar @username or ID",
+    example: '/avatar @DudeThatsErin#8061',
+    /**
+     * @param {Client} client
+     * @param {Message} message
+     * @param {String[]} args
+     */
+    async execute(client, message, args) {
+        let user = message.author || message.mentions.users.first();
+        let avs = new MessageEmbed()
+            .setAuthor(
+                `Avatar from: ${user.tag}`,
+                user.displayAvatarURL({ dynamic: true }),
+                "https://discord.gg/UA6sSqKXpZ"
+            )
+            .setColor(ee.color)
+            .addField(
+                "❱ PNG",
+                `[\`LINK\`](${user.displayAvatarURL({ format: "png" })})`,
+                true
+            )
+            .addField(
+                "❱ JPEG",
+                `[\`LINK\`](${user.displayAvatarURL({ format: "jpg" })})`,
+                true
+            )
+            .addField(
+                "❱ WEBP",
+                `[\`LINK\`](${user.displayAvatarURL({ format: "webp" })})`,
+                true
+            )
+            .setURL(
+                user.displayAvatarURL({
+                    dynamic: true,
+                })
+            )
+            .setFooter(ee.footertext, ee.footericon)
+            .setImage(
+                user.displayAvatarURL({
+                    dynamic: true,
+                    size: 512,
+                })
+            );
 
-        const avatarList = message.mentions.users.map(user => {
-            return `${user.username}'s avatar: <${user.displayAvatarURL({ format: 'png', dynamic: true })}>`;
-        });
-
-        // Send the entire array of strings as a message
-        // By default, discord.js will `.join()` the array with `\n`
-        message.channel.send(avatarList);
-
-    }
+        message.channel.send({ embeds: [avs] })
+    },
 
 };

@@ -6,70 +6,47 @@
     N/A
 */
 
-const fs = require('fs');
-const Discord = require('discord.js');
-const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
+const { Client, Message, MessageEmbed, Collection } = require("discord.js");
+const colors = require("colors");
+const fs = require("fs");
+const client = new Client({
+  messageCacheLifetime: 60,
+  fetchAllMembers: false,
+  messageCacheMaxSize: 10,
+  restTimeOffset: 0,
+  restWsBridgetimeout: 100,
+  shards: "auto",
+  allowedMentions: {
+    parse: ["roles", "users", "everyone"],
+    repliedUser: true,
+  },
+  partials: ["MESSAGE", "CHANNEL", "REACTION"],
+  intents: 32767,
+});
+module.exports = client;
 
-// configurations
-const config = require('./config.json');
+const config = require("./config/config.json");
+const ee = require("./config/embed.json");
+const prefix = config.prefix;
+const token = config.token;
 
-// commands
-console.log('|-----------------------------------|');
-console.log('     Loading Command Files...        ');
-console.log('|-----------------------------------|');
-client.commands = new Discord.Collection();
-client.cooldowns = new Discord.Collection();
-const { cooldowns } = client;
-let connection;
+// Global Variables
+client.commands = new Collection();
+client.aliases = new Collection();
+client.events = new Collection();
+client.cooldowns = new Collection();
+client.slashCommands = new Collection();
+client.categories = fs.readdirSync("./commands/");
 
-function readFilesFromPath(pathString) {
-  const directoryEntries = fs.readdirSync(pathString, { withFileTypes: true });
-
-  return directoryEntries.reduce((filteredEntries, dirEnt) => {
-    if (dirEnt.isDirectory()) {
-      // If the entry is a directory, call this function again
-      // but now add the directory name to the path string.
-      filteredEntries.push(...readFilesFromPath(`${pathString}/${dirEnt.name}`))
-    } else if (dirEnt.isFile()) {
-      // Check if the entry is a file instead. And if so, check
-      // if the file name ends with `.js`.
-      if (dirEnt.name.endsWith('.js')) {
-        // Add the file to the command file array.
-        filteredEntries.push(`${pathString}/${dirEnt.name}`);
-      }
-    }
-
-    return filteredEntries;
-  }, []);
-}
-
-// Call the read files function with the root folder of the commands and
-// store all the file paths in the constant.
-const commandFilePaths = readFilesFromPath('./commands');
-
-// Loop over the array of file paths and set the command on the client.
-commandFilePaths.forEach((filePath) => {
-  const command = require(filePath);
-
-  client.commands.set(command.name, command);
-  console.log(command.name + ' loaded successfully!');
+// Initializing the project
+//Loading files, with the client variable like Command Handler, Event Handler, ...
+["command"].forEach((handler) => {
+  require(`./handler/${handler}`)(client);
 });
 
-
-// events
-console.log('|-----------------------------------|')
-console.log('       Loading Event Files...        ')
-console.log('|-----------------------------------|')
-const eventFiles = fs.readdirSync(`${__dirname}/events`).filter(file => file.endsWith('.js'));
-for (const file of eventFiles) {
-  const event = require(`${__dirname}/events/${file}`);
-  if (event.once) client.once(event.name, (...args) => event.execute(...args, client));
-  else client.on(event.name, (...args) => event.execute(...args, client));
-  console.log(event.name + ' loaded successfully!');
-}
 
 // end of file
 (async () => {
   connection = await require('./database.js');
-  await client.login(config.bot.token);
+  await client.login(token);
 })();

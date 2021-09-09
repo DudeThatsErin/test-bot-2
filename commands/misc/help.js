@@ -1,32 +1,70 @@
+const { Client, CommandInteraction, MessageEmbed } = require("discord.js");
+const { readdirSync } = require("fs");
+const prefix = require("../../config/config.json").prefix;
 const paginationEmbed = require('@psibean/discord.js-pagination');
-const {	MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
+const config = require('../../config/config.json');
+const prefix = config.prefix;
+const ee = require('../../config/embed.json');
 
 module.exports = {
 	name: 'help',
 	description: 'This allows users to find out more information about themselves or another user they ping or provide the ID for.',
 	aliases: ['h', 'halp', 'command', 'commands'],
-	usage: `s.help`,
-	inHelp: 'yes',
-	example: `s.help or s.h or s.halp`,
-	userPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
-	botPerms: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY', 'ADD_REACTIONS'],
-	async execute(msg, args, client) {
-		let prefix = client.guildCommandPrefixes.get(msg.guild.id);
-		//console.log(prefix);
+	usage: `/help`,
+	example: `/help ping`,
+	permissions: " ",
+	categories: "Miscellaneous",
+	async execute(interaction) {
 
 		const helpEmbeds = [];
+		const roleColor =
+			interaction.guild.me.displayHexColor === "#000000"
+				? "#ffffff"
+				: interaction.guild.me.displayHexColor;
 
-		const embed1 = new MessageEmbed()
-			.setColor('#6683AD')
-			.setTitle('Help Menu page 1 - General Commands')
-			.setDescription(`These are all of the commands Sakura Moon can do. If you want to get more information you can do \`${prefix}help <command>\`. Clicking the emojies at the bottom of this message will allow you to go through all of our commands.`)
-			.addFields({
-				name: 'These are commands any user can use.',
-				value: '```css\nping\navatar\nuser-info\nserver-info\npatreon\nbot-info\ninvite\nhelp\nreport\nstatusreport\ncoinflip\nroll\n```'
+		let regularCommands = [];
+
+		readdirSync("./commands/").forEach((dir) => {
+			const commands = readdirSync(`./commands/${dir}/`).filter((file) =>
+				file.endsWith(".js")
+			);
+
+			const cmds = commands.map((command) => {
+				let file = require(`../../commands/${dir}/${command}`);
+
+				if (!file.name) return "No command name.";
+
+				let name = file.name.replace(".js", "");
+
+				return `\`${name}\``;
 			});
 
+			let data = new Object();
+
+			data = {
+				name: dir.toUpperCase(),
+				value: cmds.length === 0 ? "In progress." : cmds.join(" "),
+			};
+
+			regularCommands.push(data);
+		});
+
+		regularCommands.forEach(function (dir, command, name) {
+
+		});
+
+		const description = `These are all of the commands Sakura Moon can do. If you want to get more information you can do \`${prefix}help <command>\`. Clicking the emojies at the bottom of this message will allow you to go through all of our commands.`;
+
+
+		const embed1 = new MessageEmbed()
+			.setColor(roleColor)
+			.setTitle('Help Menu page 1')
+			.setDescription(description)
+			.addFields(regularCommands);
+
 		const embed2 = new MessageEmbed()
-			.setColor('#6683AD')
+			.setColor(roleColor)
 			.setTitle('Help Menu page 2 - Moderator Only Commands')
 			.setDescription(`These are all of the commands Sakura Moon can do. If you want to get more information you can do \`${prefix}help <command>\`. Clicking the emojies at the bottom of this message will allow you to go through all of our commands.`)
 			.addFields({
@@ -35,7 +73,7 @@ module.exports = {
 			});
 
 		const embed3 = new MessageEmbed()
-			.setColor('#6683AD')
+			.setColor(roleColor)
 			.setTitle('Help Menu page 3 - Suggestion System Commands')
 			.setDescription(`These are all of the commands Sakura Moon can do. If you want to get more information you can do \`${prefix}help <command>\`. Clicking the emojies at the bottom of this message will allow you to go through all of our commands.`)
 			.addFields({
@@ -47,7 +85,7 @@ module.exports = {
 			});
 
 		const embed4 = new MessageEmbed()
-			.setColor('#6683AD')
+			.setColor(roleColor)
 			.setTitle('Help Menu page 4 - Thanks System Commands')
 			.setDescription(`These are all of the commands Sakura Moon can do. If you want to get more information you can do \`${prefix}help <command>\`. Clicking the emojies at the bottom of this message will allow you to go through all of our commands.`)
 			.addFields({
@@ -56,7 +94,7 @@ module.exports = {
 			});
 
 		const embed5 = new MessageEmbed()
-			.setColor('#6683AD')
+			.setColor(roleColor)
 			.setTitle('Help Menu page 5 - Challenge System Commands')
 			.setDescription(`These are all of the commands Sakura Moon can do. If you want to get more information you can do \`${prefix}help <command>\`. Clicking the emojies at the bottom of this message will allow you to go through all of our commands.`)
 			.addFields({
@@ -70,13 +108,14 @@ module.exports = {
 		pages = [];
 
 		const footerResolver = (currentPageIndex, pagesLength) =>
-			`Page ${currentPageIndex + 1} / ${pagesLength}: ${(currentPageIndex % 2 === 0) ? 'Thanks for using Sakura Moon!' : 'Thanks for using Sakura Moon!'}`;
+			`Page ${currentPageIndex + 1} / ${pagesLength}: ${(currentPageIndex % 2 === 0) ? ee.footertext : ee.footertext}`;
 		const collectErrorHandler = ({ error }) => console.log(error);
 
 		helpEmbeds.push(embed1);
 		helpEmbeds.push(embed2);
 		helpEmbeds.push(embed3);
 		helpEmbeds.push(embed4);
+		helpEmbeds.push(embed5)
 
 		let cmdd = args[0];
 
@@ -84,10 +123,9 @@ module.exports = {
 
 			const cmd = msg.client.commands.get(args[0]) || msg.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 			if (!cmd) return msg.channel.send("That command could not be found!");
-			if (!cmd.inHelp) return msg.channel.send("No help for that command could be found!");
 
 			const emb = new MessageEmbed()
-				.setColor('#e8bffd')
+				.setColor(roleColor)
 				.setTitle(`Help for \`${prefix}${cmd.name}\``);
 			if (cmd.description) {
 				emb.setDescription(cmd.description, true);
